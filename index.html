@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Card Game</title>
+    <link rel="stylesheet" type="text/css" href="css/card-game.css" />
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script src="https://code.jquery.com/jquery.js"></script>
+
+
+    <!-- Added a link to Bootstrap-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+    <h1>RPG Card Game</h1>
+    <h2>Choose Character</h2>
+    <div class="row">
+
+        <div class="col-xs-8">
+
+            <div class="row">
+                <div class=col-xs-12>
+                    <div class="panel panel-default panel-body" id="cardContainer">
+                        <h3>Characters</h3>
+                    </div>
+
+                </div>           
+            </div>
+
+            <div class="row">
+                <div class=col-xs-12>
+                    <div class="panel panel-default panel-body" id="enemyContainer">
+                        <h3>Opponents</h3>
+                    </div>
+                </div>           
+            </div>
+            
+            <p><div id="fightButton"></div></p>
+            <div class="row">
+                <div class=col-xs-12>
+                    <div class="panel panel-default panel-body" id="fightContainer">
+                            <h3>Current Enemy</h3>
+                    </div>
+                </div>           
+            </div>
+            
+                
+            
+           
+            
+        </div>
+
+        <div class="col-xs-4">
+            <div class="panel panel-default panel-body">
+                
+                    <p>Wins: <span id="wins"></span></p></li>
+                    <p>Losses: <span id="losses"></span></p></li>
+                    <p>HP: <span id="currentHP"></span></p></li>
+                    <p>Opponents HP: <span id="opponentsHP"></span></p></li>
+                
+            </div>
+        </div>
+
+    </div>
+    
+    
+    <script src="js/card-game.js" type="text/javascript"></script>
+</body>
+</html>

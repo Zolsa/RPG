@@ -1,0 +1,41 @@
+article, header, footer, div, section, span, label,
+audio, video, canvas, form, main, em, b, p, i, a,
+h1, h2, h3, h4, h5, h6, input, meter, ul, li, dt,
+aside, address, html, body, dd, dl, figcaption, q,
+figure, fieldset, legend, img, nav, select, option,
+ol, small, strong, sub, sup, textarea, time, button {
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2 {
+    text-align: center;
+}
+.panel {
+    min-width: 610px;
+    min-height: 250px;
+}
+
+.game_card {
+    float: left;
+    width: 20%;
+    margin: 2%;
+    cursor: pointer;
+    outline: 1px solid #3c3c3c;
+    background-color: #ccc;
+    min-width: 120px;
+}
+
+.game_card h4 {
+    width: 100%;
+    margin-top: 15px;
+    text-align: center;
+    display: inline-block;
+}
+
+.game_card img {
+    width: 90%;
+    height: 60%;
+    margin-top: 15px;
+    margin: 5%;
+}
