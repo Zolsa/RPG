@@ -8,7 +8,7 @@ ol, small, strong, sub, sup, textarea, time, button {
     padding: 0;
 }
 
-h1, h2 {
+h1, h2, h5 {
     text-align: center;
 }
 .panel {
@@ -38,4 +38,8 @@ h1, h2 {
     height: 60%;
     margin-top: 15px;
     margin: 5%;
+}
+
+#fightButton {
+    margin: 0 0 20px 40px;
 }
