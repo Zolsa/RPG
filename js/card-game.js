@@ -1,5 +1,5 @@
 
-//Please Help!  I'm close but I can't quite finish it.
+//Need a win and loss function?  And adjust HP, wins and losses accordingly.  
 var game = {};
 var wins;
 var losses;
@@ -110,19 +110,20 @@ game.enemyChar = function() {
     }
 }
 
+game.fight = function() {
+    game.updateChar();       
+    console.log(game.userChar().attack);
+    console.log(game.userChar().hp);
+    console.log(game.enemyChar().hp);   
+}
+
 game.updateChar = function () {
     //cardhP = document.getElementById(game.userChar().id + "-h5");
     game.userChar().hp = game.userChar().hp - game.enemyChar().attack;
     game.enemyChar().hp = game.userChar().hp - game.userChar().attack;
+    game.userChar().attack += 5;
 }
-
-game.fight = function() {
-    game.updateChar();       
-    (game.userChar().attack) += 5;
-    console.log(game.userChar().attack);
-    console.log(game.userChar().hp);   
-}
-        
+     
 game.bindCardListeners = function() {
     cards.forEach(function (card) {
 
@@ -145,7 +146,6 @@ game.bindCardListeners = function() {
                 case "enemy":
                     $("h2").text("Fight");
                     $("#fightContainer").append(card);
-                    $("h2").text("Fight");
                     break;     
             }
             /*
