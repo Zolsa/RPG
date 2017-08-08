@@ -75,26 +75,65 @@ game.buildCards = function() {
 
 
                 
-            
+/*            
+game.gameState = function() {
+    
+    
+    
+    
+    else if($("#cardContainer > div").length === 1 && $("#fightContainer > div").length === 1) {
+        console.log("blah1");
+        return "fight";
+        
+    }
 
+
+    else if($("#cardContainer > div").length === 1 && $("#enemyContainer > div").length <= 3 && $("#fightContainer > div").length === 0) {
+        console.log("enemy");
+        return "enemy";
+        
+    }
+
+    else if($("#cardContainer > div").length === 4 && $("#enemyContainer > div").length === 0 && $("#fightContainer > div").length === 0) {
+        console.log("char");
+        return "char";
+        
+    }
+   
+    
+    else if($("#cardContainer > div").length === 0) {
+        return "lose";
+    }
+    else if($("#cardContainer > div").length === 1 && $("#enemyContainer > div").length === 0 && $("#fightContainer > div").length === 0) {
+        return "win";
+    }
+
+    else {
+        return;
+    }
+}
+*/
 
 game.gameState = function() {
-    if(($("#cardContainer > div").length) === cards.length) {
-        return "beginning";// body...
+
+    if($("#cardContainer > div").length === cards.length) {
+        return "char";// body...
     }
-    else if(($("#fightContainer > div").length) === 0) {
-        if()
-        return "chooseEnemy";
-    }
-    else if((($("#fightContainer > div").length) === 1 && ($("#enemyContainer > div").length) <= 2)) {
+
+    else if($("#fightContainer > div").length === 1 && $("#enemyContainer > div").length <= 2 && $("#cardContainer > div").length === 1) {
         return "fight";
     }
-    else {
-        return "fight";
-    }
-    
+
+    else if($("#fightContainer > div").length === 0 && $("#enemyContainer > div").length <= 3 && $("#cardContainer > div").length === 1) {
+            return "enemy";
+        }
 }
 
+    
+
+    
+    
+    
 game.fightValidate = function() {
     if((($("#cardContainer > div").length) === 1 && ($("#fightContainer > div").length) === 1)) {
         return true;
@@ -111,7 +150,6 @@ game.determineEnemyChar = function() {
             var enemyChar = characters[i];
         }
     }
-    
     return(enemyChar);
 }
 
@@ -127,8 +165,6 @@ game.determineUserChar = function() {
 }
     
 game.fight = function() {     
-    console.log(game.determineUserChar().hp);
-    console.log(game.determineEnemyChar().hp);
     (game.determineUserChar().hp) = (game.determineUserChar().hp) - (game.determineEnemyChar().attack);
     (game.determineEnemyChar().hp) = (game.determineEnemyChar().hp) - (game.determineUserChar().attack);
     (game.determineUserChar().attack) += 5;
@@ -146,57 +182,51 @@ game.bindCardListeners = function() {
 
         card.addEventListener("click", function () {
             //game.fight();
+            if(game.gameState() === "fight") {
+                $("h2").text("Fight");
+                $("#fightButton").append('<button data-role="button"><h4>Fight!</h4></button>').trigger('create');
+                $("button").bind("click", function() {
+                    game.determineEnemyChar(); 
+                    game.fight();
+                });
 
-            if(game.gameState() === "beginning") {
+            }
+
+            else if(game.gameState() === "enemy") {
+                $("h2").text("Choose Enemy");
+                $("#fightContainer").append(card);
+                game.determineUserChar();
+                
+                
+            }
+
+            else(game.gameState() === "char") {
+                $("h2").text("Choose Character");
+
                 for(i = 0; i < cards.length; i++) {
                     if(cards[i].id !== card.id) {
                         $("#enemyContainer").append(cards[i]);     
                     }  
                 } 
-                $("h2").text("Choose Enemy");
             }
 
-            else if(game.gameState() === "chooseEnemy") {
-                $("#fightButton").append('<button data-role="button"><h4>Fight!</h4></button>').trigger('create');
-                $("button").bind("click", function() {
-                    
-                        game.determineEnemyChar();
-                        game.determineUserChar();
-                        game.fight();
-
-                }); 
-                $("#fightContainer").append(card);
-                $("h2").text("Fight");  
-            }
-
-            else if(game.gameState() === "fight") {
-                
-
-            }
-             
-                
-                    //alert("Please Click Fight!");
-                
-            
             
 
             
+
             console.log("Clicked the " + card.id + " card");
             //return;
 
             // check for state of game here and act accordingly
 
         });
-    });
-
-    
+    });  
 }
 
 
 
 $(document).ready(function () {
-    var userChar;
-    var enemyChar;
+    
     game.buildCards();
     game.bindCardListeners();
     
