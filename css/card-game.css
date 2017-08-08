@@ -11,6 +11,7 @@ ol, small, strong, sub, sup, textarea, time, button {
 h1, h2, h5 {
     text-align: center;
 }
+
 .panel {
     min-width: 610px;
     min-height: 250px;
