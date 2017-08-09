@@ -1,10 +1,11 @@
 
-//Need a win and loss function, reset and adjust HP, wins and losses accordingly.  
+//Need a reset that updates game.gameState and a way to update the dom ids HP, wins and losses at every step.  
 var game = {};
 var wins = 0;
 var losses = 0;
 var winsEl = document.getElementById('wins');
 var lossesEl = document.getElementById('losses');
+
 //Its better to create the HTML from here so its easier to make changes (add characters, properties etc.) if I want to.  More dynamic this way.
 var characters = [
         {
@@ -125,15 +126,14 @@ game.enemyChar = function() {
 game.winLose = function() {
     switch(game.gameState()) {
         case "lose":
-        alert("Sorry. You Lost. Try Again!");
-        game.createResetButton();
-        losses++;
-        lossesEl = losses;
-        break;
-    case "win":
-        alert("Congratulations. You Won!");
-        wins++;
-        winsEl = wins;
+            alert("Sorry. You Lost. Try Again!");
+            losses++;
+            lossesEl = losses;
+            break;
+        case "win":
+            alert("Congratulations. You Won!");
+            wins++;
+            winsEl = wins;
     }
 }
 
@@ -161,35 +161,34 @@ game.updateChar = function () {
     game.userChar().attack += 5;
 }
 
-game.fight = function() {
-    game.updateChar();       
-    console.log(game.userChar().attack);
-    console.log(game.userChar().hp);
-    console.log(game.enemyChar().hp);   
-}
-
-game.createResetButton = function() {
-    $("#cardContainer").prepend("<button id=resetButton><h4>Play Again</h4></button>").trigger("create");
-    $("#resetButton").bind("click", function() {
-        game.reset();
-    });
-}
 //reset isn't working quite right
 game.reset = function() {
-    game.createResetButton();
     $(".game_card").remove();
-    $("#resetButton").remove();
+    $("#fightButton").remove();
     $("h2").text("Choose Your Character");
     game.buildCards();
     game.bindCardListeners();
-    game.gameState();
-    console.log(game.gameState());
 
     for(i = 0; i < characters.length; i++) {
         characters[i].attack = game.randomInt(10, 20);
-        characters[i].hp = game.randomInt(120, 180);
+        characters[i].hp = game.randomInt(60, 100);
     }
+    //Can't seem to get the game.State
+    
 }
+
+/*
+Didn't need this in the end
+game.createResetButton = function() {
+    game.reset();
+    $("#cardContainer").prepend("<button id=resetButton><h4>Reset</h4></button>").trigger("create");
+    $("#resetButton").bind("click", function() {
+        game.reset();
+        //This doesn't work
+        return game.gameState();
+    });
+}
+*/
 
 game.createFightButton = function() {
     $("#fightContainer").prepend("<button id=fightButton><h4>Fight!</h4></button>").trigger("create");
@@ -197,7 +196,7 @@ game.createFightButton = function() {
         switch(game.gameState()) {
             case "fight":
                 game.enemyChar();
-                game.fight();
+                game.updateChar();
                 game.gameUpdate();
                 break;
 
@@ -211,9 +210,9 @@ game.createFightButton = function() {
 
             case "lose":
                 alert("Sorry. You Lost. Try Again!");
-                game.createResetButton();
                 losses++;
                 lossesEl = losses;
+                game.reset();
                 game.reset();
                 break;
 
@@ -221,6 +220,7 @@ game.createFightButton = function() {
                 alert("Congratulations. You Won!");
                 wins++;
                 winsEl = wins;
+                game.reset();
                 game.reset(); 
         }
     });
@@ -237,13 +237,14 @@ game.bindCardListeners = function() {
                     break;
 
                 case "char":
+                    
                     $("h2").text("Choose Your Enemy");
                     for(i = 0; i < cards.length; i++) {
                         if(cards[i].id !== card.id) {
                             $("#enemyContainer").append(cards[i]);     
                         }  
                     }
-                    game.createFightButton();
+                    
                     break;
 
                 case "enemy":
@@ -260,6 +261,12 @@ game.bindCardListeners = function() {
                     else {
                         return;
                     }
+                    break;
+
+                case "win":
+                    alert("Congratulations You Won!");
+                    game.reset();
+                    game.reset();
             }
             
             /*Switch statement was a little cleaner I think but this works too.
@@ -298,7 +305,8 @@ game.bindCardListeners = function() {
 
 $(document).ready(function() {   
     game.buildCards();
-    game.bindCardListeners(); 
+    game.bindCardListeners();
+    game.createFightButton();
 });
 
 
