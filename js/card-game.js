@@ -20,7 +20,7 @@ var characters = [
             "name" : "Batman",
             "image" : "images/batman.jpg",
             "attack" : 12,
-            "hp" : 220
+            "hp" : 120
         },
         {
             "id" : "joker",
@@ -132,7 +132,7 @@ game.fight = function() {
 game.updateChar = function () {
     //cardhP = document.getElementById(game.userChar().id + "-h5");
     game.userChar().hp = game.userChar().hp - game.enemyChar().attack;
-    game.enemyChar().hp = game.userChar().hp - game.userChar().attack;
+    game.enemyChar().hp = game.enemyChar().hp - game.userChar().attack;
     game.userChar().attack += 5;
 }
 
@@ -166,10 +166,20 @@ game.gameUpdate = function() {
 game.createFightButton = function() {
     $("#fightButton").append("<button><h4>Fight!</h4></button>").trigger("create");
     $("button").bind("click", function() {
+        if(game.gameState() === "char") {
+            alert("Please Choose Your Character");
+        }
+
+        else if(game.gameState() === "enemy") {
+            alert("Please Choose Your Enemy");
+        }
+
+        else {
         game.enemyChar();
         game.userChar(); 
         game.fight();
         game.gameUpdate();
+        }
     });
 }
      
@@ -190,25 +200,29 @@ game.bindCardListeners = function() {
                             $("#enemyContainer").append(cards[i]);     
                         }  
                     }
+                    game.userChar();
                     break;
 
                 case "enemy":
-                    /*Need acondition where if the card clicked is in the cardContainer, the alert "Please pick your enemy" is shown.  
-                    if($("#cardContainer > characters[i]")) {
-                        alert("Please Pick Enemy!");
-                        return;
-                    /
-                    else {*/
+                    game.userChar();
+                    if(game.userChar().id === card.id) {
+                        alert("Please Choose Your Enemy");
+                    }
+
+                    else if (game.userChar().id != card.id) {
                         $("h2").text("Fight");
                         $("#fightContainer").append(card);
+                    }
+
+                    else {
+                        return;
+                    }
             }
-            /*
-            Switch statement was a little cleaner I think but this works too.
+            
+            /*Switch statement was a little cleaner I think but this works too.
 
             if(game.gameState() === "fight") {
-                alert("Please Click Fight!");
-            //Don't know what to put here but it feels like it should be here.
-            //Maybe if you click on anything but the button you get a "please click fight" alert.   
+                alert("Please Click Fight!");  
             }
 
             else if (game.gameState() === "char") {
@@ -237,7 +251,6 @@ game.bindCardListeners = function() {
     });
 }
 
-
 switch(game.gameState()) {
     case "win":
         alert("Congratulations. You Won!");
@@ -248,6 +261,7 @@ switch(game.gameState()) {
     case "lose":
         alert("Sorry. You Lost. Try Again!");
         losses++;
+        lossesEl = losses;
 }
 
 $(document).ready(function() {   
