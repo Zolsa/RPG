@@ -3,8 +3,6 @@
 var game = {};
 var wins = 0;
 var losses = 0;
-var winsEl = document.getElementById('wins');
-var lossesEl = document.getElementById('losses');
 
 //Its better to create the HTML from here so its easier to make changes (add characters, properties etc.) if I want to.  More dynamic this way.
 var characters = [
@@ -109,7 +107,7 @@ game.randomInt = function (min, max) {
 
 game.userChar = function() {   
     for(i = 0; i < characters.length; i++) {
-        if(characters[i].id === $("#cardContainer > .game_card").attr("id")) { 
+        if(characters[i].id === $("#cardContainer > .game_card").attr("id")) {
             return characters[i];          
         }
     }   
@@ -123,32 +121,36 @@ game.enemyChar = function() {
     }
 }
 
-game.winLose = function() {
-    switch(game.gameState()) {
-        case "lose":
-            alert("Sorry. You Lost. Try Again!");
-            losses++;
-            lossesEl = losses;
-            break;
-        case "win":
-            alert("Congratulations. You Won!");
-            wins++;
-            winsEl = wins;
-    }
+game.win = function() {
+    alert("Congratulations. You Won!");
+    wins++;
+    $("#wins").text(wins);
+    game.reset();
+    game.reset();
+}
+
+game.lose = function() {
+    alert("You Lost Try Again");
+    losses++;
+    $("#losses").text(losses);
+    game.reset();
+    game.reset();
 }
 
 game.gameUpdate = function() {
     
     if(game.gameState() === "fight") {
+        if(game.userChar().hp <= 0) {
+            $("#cardContainer > div").remove();
+            game.lose();
+        }
 
         if(game.enemyChar().hp <= 0) {
             $("#fightContainer > div").remove();
             $("h2").text("Choose Another Enemy");
         }
     }
-    else if(game.gameState() === "win" || game.gameState() === "lose") {
-        game.winLose();
-    }
+
     else {
         return;
     }
@@ -159,6 +161,11 @@ game.updateChar = function () {
     game.userChar().hp = game.userChar().hp - game.enemyChar().attack;
     game.enemyChar().hp = game.enemyChar().hp - game.userChar().attack;
     game.userChar().attack += 5;
+    //The following doesn't work
+    $("#currenthp").text(game.userChar().hp); 
+    $("#opponentshp").text(game.enemyChar().hp);
+    console.log(game.userChar().hp);
+
 }
 
 //reset isn't working quite right
@@ -168,27 +175,14 @@ game.reset = function() {
     $("h2").text("Choose Your Character");
     game.buildCards();
     game.bindCardListeners();
+    $("#currenthp").text(0); 
+    $("#opponentshp").text(0);
 
     for(i = 0; i < characters.length; i++) {
         characters[i].attack = game.randomInt(10, 20);
         characters[i].hp = game.randomInt(60, 100);
-    }
-    //Can't seem to get the game.State
-    
+    }  
 }
-
-/*
-Didn't need this in the end
-game.createResetButton = function() {
-    game.reset();
-    $("#cardContainer").prepend("<button id=resetButton><h4>Reset</h4></button>").trigger("create");
-    $("#resetButton").bind("click", function() {
-        game.reset();
-        //This doesn't work
-        return game.gameState();
-    });
-}
-*/
 
 game.createFightButton = function() {
     $("#fightContainer").prepend("<button id=fightButton><h4>Fight!</h4></button>").trigger("create");
@@ -211,17 +205,12 @@ game.createFightButton = function() {
             case "lose":
                 alert("Sorry. You Lost. Try Again!");
                 losses++;
-                lossesEl = losses;
+                $("#losses").text(losses);
                 game.reset();
                 game.reset();
-                break;
 
             case "win":
-                alert("Congratulations. You Won!");
-                wins++;
-                winsEl = wins;
-                game.reset();
-                game.reset(); 
+                game.win();          
         }
     });
 }
