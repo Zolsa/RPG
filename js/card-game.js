@@ -122,11 +122,36 @@ game.enemyChar = function() {
     }
 }
 
-game.fight = function() {
-    game.updateChar();       
-    console.log(game.userChar().attack);
-    console.log(game.userChar().hp);
-    console.log(game.enemyChar().hp);   
+game.winLose = function() {
+    switch(game.gameState()) {
+        case "lose":
+        alert("Sorry. You Lost. Try Again!");
+        game.createResetButton();
+        losses++;
+        lossesEl = losses;
+        break;
+    case "win":
+        alert("Congratulations. You Won!");
+        wins++;
+        winsEl = wins;
+    }
+}
+
+game.gameUpdate = function() {
+    
+    if(game.gameState() === "fight") {
+
+        if(game.enemyChar().hp <= 0) {
+            $("#fightContainer > div").remove();
+            $("h2").text("Choose Another Enemy");
+        }
+    }
+    else if(game.gameState() === "win" || game.gameState() === "lose") {
+        game.winLose();
+    }
+    else {
+        return;
+    }
 }
 
 game.updateChar = function () {
@@ -136,49 +161,67 @@ game.updateChar = function () {
     game.userChar().attack += 5;
 }
 
-game.reset = function() {
-    for(i = 0; i < characters.length; i++) {
-        $(".game_card").remove();
-    game.buildCards();
-    game.bindCardListeners();
-    characters[i].attack = game.randomInt(10, 20);
-    characters[i].hp = game.randomInt(120, 180); 
-    }
+game.fight = function() {
+    game.updateChar();       
+    console.log(game.userChar().attack);
+    console.log(game.userChar().hp);
+    console.log(game.enemyChar().hp);   
 }
 
-//Not quite right
-game.gameUpdate = function() {
-    if(game.gameState() === "fight") {
+game.createResetButton = function() {
+    $("#cardContainer").prepend("<button id=resetButton><h4>Play Again</h4></button>").trigger("create");
+    $("#resetButton").bind("click", function() {
+        game.reset();
+    });
+}
+//reset isn't working quite right
+game.reset = function() {
+    game.createResetButton();
+    $(".game_card").remove();
+    $("#resetButton").remove();
+    $("h2").text("Choose Your Character");
+    game.buildCards();
+    game.bindCardListeners();
+    game.gameState();
+    console.log(game.gameState());
 
-        if(game.userChar().hp <= 0) {
-            $("#cardContainer > div").remove();
-            $("h2").text("You Lost! Try Again");
-            game.reset();
-        }
-      
-        if(game.enemyChar().hp <= 0) {
-            $("#fightContainer > div").remove();
-            $("h2").text("Choose Another Enemy");
-        }
+    for(i = 0; i < characters.length; i++) {
+        characters[i].attack = game.randomInt(10, 20);
+        characters[i].hp = game.randomInt(120, 180);
     }
 }
 
 game.createFightButton = function() {
-    $("#fightButton").append("<button><h4>Fight!</h4></button>").trigger("create");
-    $("button").bind("click", function() {
-        if(game.gameState() === "char") {
-            alert("Please Choose Your Character");
-        }
+    $("#fightContainer").prepend("<button id=fightButton><h4>Fight!</h4></button>").trigger("create");
+    $("#fightButton").bind("click", function() {
+        switch(game.gameState()) {
+            case "fight":
+                game.enemyChar();
+                game.fight();
+                game.gameUpdate();
+                break;
 
-        else if(game.gameState() === "enemy") {
-            alert("Please Choose Your Enemy");
-        }
+            case "char":
+                alert("Please Choose Your Character");
+                break;
 
-        else {
-        game.enemyChar();
-        game.userChar(); 
-        game.fight();
-        game.gameUpdate();
+            case "enemy":
+                alert("Please Choose Your Enemy");
+                break;
+
+            case "lose":
+                alert("Sorry. You Lost. Try Again!");
+                game.createResetButton();
+                losses++;
+                lossesEl = losses;
+                game.reset();
+                break;
+
+            case "win":
+                alert("Congratulations. You Won!");
+                wins++;
+                winsEl = wins;
+                game.reset(); 
         }
     });
 }
@@ -194,13 +237,13 @@ game.bindCardListeners = function() {
                     break;
 
                 case "char":
-                    $("h2").text("Choose Enemy");
+                    $("h2").text("Choose Your Enemy");
                     for(i = 0; i < cards.length; i++) {
                         if(cards[i].id !== card.id) {
                             $("#enemyContainer").append(cards[i]);     
                         }  
                     }
-                    game.userChar();
+                    game.createFightButton();
                     break;
 
                 case "enemy":
@@ -251,23 +294,11 @@ game.bindCardListeners = function() {
     });
 }
 
-switch(game.gameState()) {
-    case "win":
-        alert("Congratulations. You Won!");
-        wins++;
-        winsEl = wins;
-        break;
 
-    case "lose":
-        alert("Sorry. You Lost. Try Again!");
-        losses++;
-        lossesEl = losses;
-}
 
 $(document).ready(function() {   
     game.buildCards();
-    game.bindCardListeners();
-    game.createFightButton(); 
+    game.bindCardListeners(); 
 });
 
 
