@@ -115,7 +115,7 @@ game.userChar = function() {
 
 game.enemyChar = function() {
     for(i = 0; i < characters.length; i++) {
-        if(characters[i].id === ($("#fightContainer > .game_card").attr("id"))) { 
+        if(characters[i].id === $("#fightContainer > .game_card").attr("id")) { 
             return characters[i];
         }
     }
@@ -140,14 +140,23 @@ game.lose = function() {
 game.gameUpdate = function() {
     
     if(game.gameState() === "fight") {
+
         if(game.userChar().hp <= 0) {
             $("#cardContainer > div").remove();
             game.lose();
         }
 
-        if(game.enemyChar().hp <= 0) {
+        else if(game.enemyChar().hp <= 0 && $("#enemyContainer > div").length === 0) {
+            game.win();
+        }
+
+        else if(game.enemyChar().hp <= 0 && $("#enemyContainer > div").length >= 1) {
             $("#fightContainer > div").remove();
             $("h2").text("Choose Another Enemy");
+        }
+
+        else {
+            return;
         }
     }
 
