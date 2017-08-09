@@ -1,7 +1,8 @@
 
 /*Need a reset that updates game.gameState and a way to update the HP displayed on each character.  
-I can't figure out why this isn't working when it resets.
-Tried everything I could think of.*/
+I can't figure out why the game state isn't recognized after reset (see line 192), so I just refresh the page but lose the wins and losses. 
+*/
+
 var game = {};
 var wins = 0;
 var losses = 0;
@@ -185,8 +186,10 @@ game.updateChar = function () {
 
 }
 
-//Reset works but throws back undefined for game.gameState which is why you can't keep playing
+
 game.reset = function() {
+
+    /*This all works fine but throws back undefined for game.gameState which I think is why you can't keep playing 
     $(".game_card").remove();
     $("#fightButton").remove();
     $("h2").text("Choose Your Character");
@@ -202,7 +205,12 @@ game.reset = function() {
         console.log(i);
         console.log(characters[i].hp);
     }
-    console.log(game.gameState());  
+    console.log(game.gameState()); 
+    */
+
+    //This refreshes the page but resets wins/losses back to 0 without cookies
+    location.reload(); 
+    
 }
 
 game.createFightButton = function() {
