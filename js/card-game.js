@@ -1,5 +1,7 @@
 
-//Need a reset that updates game.gameState and a way to update the dom ids HP, wins and losses at every step.  
+/*Need a reset that updates game.gameState and a way to update the HP displayed on each character.  
+I can't figure out why this isn't working when it resets.
+Tried everything I could think of.*/
 var game = {};
 var wins = 0;
 var losses = 0;
@@ -99,7 +101,8 @@ game.randomInt = function (min, max) {
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1)) + min;
 
-    } 
+    }
+
     else {
         return false;
     }    
@@ -107,6 +110,7 @@ game.randomInt = function (min, max) {
 
 game.userChar = function() {   
     for(i = 0; i < characters.length; i++) {
+
         if(characters[i].id === $("#cardContainer > .game_card").attr("id")) {
             return characters[i];          
         }
@@ -115,6 +119,7 @@ game.userChar = function() {
 
 game.enemyChar = function() {
     for(i = 0; i < characters.length; i++) {
+
         if(characters[i].id === $("#fightContainer > .game_card").attr("id")) { 
             return characters[i];
         }
@@ -125,6 +130,7 @@ game.win = function() {
     alert("Congratulations. You Won!");
     wins++;
     $("#wins").text(wins);
+    //Not sure why I have to call the reset function twice to reset all the characters.  If I just call it once, it doesn't reset the user and enemy.
     game.reset();
     game.reset();
 }
@@ -133,8 +139,10 @@ game.lose = function() {
     alert("You Lost Try Again");
     losses++;
     $("#losses").text(losses);
+    //Not sure why I have to call the reset function twice to reset all the characters.  If I just call it once, it doesn't reset the user and enemy.
     game.reset();
     game.reset();
+    
 }
 
 game.gameUpdate = function() {
@@ -166,31 +174,35 @@ game.gameUpdate = function() {
 }
 
 game.updateChar = function () {
-    //cardhP = document.getElementById(game.userChar().id + "-h5");
+    /*Beginning of failed attempt to update the HP on each character.
+    cardhP = document.getElementById(game.userChar().id + "-h5");*/
     game.userChar().hp = game.userChar().hp - game.enemyChar().attack;
     game.enemyChar().hp = game.enemyChar().hp - game.userChar().attack;
     game.userChar().attack += 5;
-    //The following doesn't work
     $("#currenthp").text(game.userChar().hp); 
     $("#opponentshp").text(game.enemyChar().hp);
     console.log(game.userChar().hp);
 
 }
 
-//reset isn't working quite right
+//Reset works but throws back undefined for game.gameState which is why you can't keep playing
 game.reset = function() {
     $(".game_card").remove();
     $("#fightButton").remove();
     $("h2").text("Choose Your Character");
     game.buildCards();
     game.bindCardListeners();
+    game.createFightButton();
     $("#currenthp").text(0); 
     $("#opponentshp").text(0);
 
     for(i = 0; i < characters.length; i++) {
         characters[i].attack = game.randomInt(10, 20);
         characters[i].hp = game.randomInt(60, 100);
-    }  
+        console.log(i);
+        console.log(characters[i].hp);
+    }
+    console.log(game.gameState());  
 }
 
 game.createFightButton = function() {
@@ -201,6 +213,10 @@ game.createFightButton = function() {
                 game.enemyChar();
                 game.updateChar();
                 game.gameUpdate();
+                /*According to the log the gameState is where it should be when it resets.  Just can't figure out why its not working.
+                console.log($("#cardContainer > div").length);
+                console.log($("#enemyContainer > div").length);
+                console.log($("#fightContainer > div").length);*/
                 break;
 
             case "char":
@@ -212,11 +228,7 @@ game.createFightButton = function() {
                 break;
 
             case "lose":
-                alert("Sorry. You Lost. Try Again!");
-                losses++;
-                $("#losses").text(losses);
-                game.reset();
-                game.reset();
+                game.lose();
 
             case "win":
                 game.win();          
@@ -298,8 +310,6 @@ game.bindCardListeners = function() {
         });
     });
 }
-
-
 
 $(document).ready(function() {   
     game.buildCards();
